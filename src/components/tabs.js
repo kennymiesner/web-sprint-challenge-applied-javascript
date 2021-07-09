@@ -1,3 +1,6 @@
+// Added imports to the top of the file
+import axios from 'axios'
+
 const Tabs = (topics) => {
   // TASK 3
   // ---------------------
@@ -13,6 +16,26 @@ const Tabs = (topics) => {
   //   <div class="tab">technology</div>
   // </div>
   //
+
+  const allTopics = document.createElement('div')
+
+  allTopics.classList.add('topics')
+ 
+  topics.forEach(topic => {
+    const tab = document.createElement('div')
+    tab.classList.add('tab')
+    tab.textContent = topic
+    allTopics.appendChild(tab) 
+
+    // tab.addEventListener('click', () => {
+    //   console.log(tab.textContent)
+    // })
+    // 
+    // Started playing around with filtering buttons and didn't get very far.
+  })
+
+  return allTopics
+
 }
 
 const tabsAppender = (selector) => {
@@ -23,6 +46,20 @@ const tabsAppender = (selector) => {
   // Find the array of topics inside the response, and create the tabs using the Tabs component.
   // Append the tabs to the element in the DOM that matches the selector passed to the function.
   //
+  //
+  // const entryPoint = document.querySelector(selector)
+  // const tab = Tabs(res.data.topics)
+  // entryPoint.appendChild(tab)
+  // 
+  // Kept going back and forth. Is there value in creating variables instead of line 52?
+
+  axios.get('http://localhost:5000/api/topics')
+    .then(res => {
+      document.querySelector(selector).appendChild(Tabs(res.data.topics))
+    })
+    .catch(err => console.log(err.message))
+    .finally(() => console.log('Done'))
+
 }
 
 export { Tabs, tabsAppender }

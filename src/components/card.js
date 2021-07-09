@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const Card = (article) => {
   // TASK 5
   // ---------------------
@@ -17,7 +19,37 @@ const Card = (article) => {
   //   </div>
   // </div>
   //
+
+  const card = document.createElement('div')
+  const cardHeadline = document.createElement('div')
+  const cardAuthorContainer = document.createElement('div')
+  const cardImgContainer = document.createElement('div')
+  const cardAuthorPhoto = document.createElement('img')
+  const cardAuthorName = document.createElement('span')
+
+  card.appendChild(cardHeadline)
+  card.appendChild(cardAuthorContainer)
+  cardAuthorContainer.appendChild(cardImgContainer)
+  cardImgContainer.appendChild(cardAuthorPhoto)
+  cardAuthorContainer.appendChild(cardAuthorName)
+
+  card.classList.add('card')
+  cardHeadline.classList.add('headline')
+  cardAuthorContainer.classList.add('author')
+  cardImgContainer.classList.add('img-container')
+
+  cardHeadline.textContent = article.headline
+  cardAuthorPhoto.src = article.authorPhoto
+  cardAuthorName.textContent = article.authorName
+
+  card.addEventListener('click', () => {
+    console.log(article.headline)
+  })
+
+  return card
+
 }
+
 
 const cardAppender = (selector) => {
   // TASK 6
@@ -28,6 +60,23 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
+  // const entryPoint = document.querySelector(selector)
+  // entryPoint.appendChild(Card(article))
+  // 
+  // Same as tabs. Kept going back and forth. Is there value in creating variables instead of line 73?
+  
+  axios.get('http://localhost:5000/api/articles')
+    .then(res => {
+      const articles = res.data.articles
+      for (const item in articles) {
+        articles[item].forEach(article => {
+          document.querySelector(selector).appendChild(Card(article))
+        })
+      }
+    })
+    .catch(err => console.log(err.message))
+    .finally(() => console.log('Done'))
+
 }
 
 export { Card, cardAppender }
